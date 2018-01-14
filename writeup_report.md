@@ -114,11 +114,14 @@ Here's a sample of images after all the preprocessing.
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
+The final model architecture is inspired from LeNet. I had initially used LeNet model but it could only give a train/test accuracy of around 94/91%. I also tweaked some of the hyperparameters like changing the activation function to "Elu", modifying the stride and padding values, increasing the number of epochs, etc. but the train/test accuracy was still around the same range. Finally, I decided to add an additional Conv layer along with higher number of filters/channels for the Conv layers and was able to achieve a train/test accuracy of around 99.1/94.1%.
 
-**LeNet Model**
 
-Input -> Convolution -> ReLU -> Pooling -> Convolution -> ReLU -> Pooling -> FullyConnected -> ReLU -> FullyConnected
+**Modified LeNet Model**
 
+Input -> Convolution -> ReLU -> Pooling -> Convolution -> ReLU -> Pooling -> Convolution -> ReLU -> Pooling -> FullyConnected -> ReLU -> FullyConnected
+
+Here's the visualization of the original LeNet model.
 <figure>
  <img src="./report_data/LeNet.png" width="1200" alt="Combined Image" />
  <figcaption>
@@ -127,33 +130,39 @@ Input -> Convolution -> ReLU -> Pooling -> Convolution -> ReLU -> Pooling -> Ful
 </figure>
 
 **Input**
-The LeNet architecture accepts a 32x32xC image as input, where C is the number of color channels. 
+The LeNet architecture accepts a 32x32xC image as input, where C is the number of color channels, 3 in our case. 
 
 **Architecture**
 
-**Layer 1: (Convolutional)** The output shape should be 28x28x6.
+**Layer 1: (Convolutional)** The output shape is 28x28x6.
 
-**Activation:** Your choice of activation function.
+**Activation:** Your choice of activation function(Relu).
 
-**Pooling:** The output shape should be 14x14x6.
+**Pooling:** The output shape is 27x27x6.
 
-**Layer 2: (Convolutional)** The output shape should be 10x10x16.
+**Layer 2: (Convolutional)** The output shape is 23x23x16.
 
-**Activation:** Your choice of activation function.
+**Activation:** Your choice of activation function(Relu).
 
-**Pooling:** The output shape should be 5x5x16.
+**Pooling:** The output shape is 11x11x16.
 
-**Flatten:** Flatten the output shape of the final pooling layer such that it's 1D instead of 3D. The easiest way to do is by using tf.contrib.layers.flatten, which is already imported for you.
+**Layer 3: (Convolutional)** The output shape is 7x7x24.
 
-**Layer 3: (Fully Connected)** This should have 120 outputs.
+**Activation:** Your choice of activation function(Relu).
 
-**Activation:** Your choice of activation function.
+**Pooling:** The output shape is 5x5x24.
 
-**Layer 4: (Fully Connected)** This should have 84 outputs.
+**Flatten:** Flatten the output shape of the final pooling layer such that it's 1D instead of 3D.
 
-**Activation:** Your choice of activation function.
+**Layer 4: (Fully Connected)** This should have 120 outputs.
 
-**Layer 5: (Fully Connected) (Logits):** This should have 43 outputs.
+**Activation:** Your choice of activation function(Relu).
+
+**Layer 5: (Fully Connected)** This should have 84 outputs.
+
+**Activation:** Your choice of activation function(Relu).
+
+**Layer 6: (Fully Connected) (Logits):** This should have 43 outputs.
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
@@ -167,21 +176,21 @@ Learning rate for Adam -> 0.001
 
 Batch size -> 128
 
-Epochs -> 10
+Epochs -> 20
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
 
-***Training set accuracy of 99.5 %***
+***Training set accuracy of 99.1%***
 
-***Validation set accuracy of 98.3%*** 
+***Validation set accuracy of ~95-96%*** 
 
-***Test set accuracy of 98.4%***
+***Test set accuracy of 94.1%***
 
-As mentioned earlier, I implemented my ConvNet as described in the [paper](http://yann.lecun.com/exdb/lenet/),for our problem statement. 
+As mentioned earlier, I implemented my ConvNet as described in the [paper](http://yann.lecun.com/exdb/lenet/), but modified it slightly for our problem statement. 
 
-ConvNet's and specifically LeNet was chosen as they have proven to be the state of art for image classification tasks (among many others). This was verified with the high training and testing accuracy of the model.
+ConvNet's were chosen as they have proven to be the state of art for image classification tasks (among many others). This was verified with the high training and testing accuracy of the model.
 
 Some of the important reasons behind choosing ConvNet's are the following:
 1. Require very less number of trainable parameters as compared to Fully connected networks.
@@ -247,15 +256,15 @@ Here are the results of the prediction:
 | Image			                     |     Prediction	        					| 
 |:---------------------:             |:--------------------------------------------:| 
 | Stop Sign      		             | Stop sign   									| 
-| Pedestrian   			             | Right-of-way at next intersection 			|
+| Pedestrian   			             | Pedestrian                        			|
 | Yield					             | Yield										|
 | 30 km/h	      		             | 30 km/hr 					 				|
-| 60 km/h	      		             | 80 km/hr 					 				|
+| 60 km/h	      		             | 50 km/hr 					 				|
 | 80 km/h	      		             | 80 km/hr 					 				|
 | Right-of-way at next intersection  | Right-of-way at next intersection     		|
 
 
-The model was able to correctly guess 5 of the 7 traffic signs, which gives an accuracy of 71.5%. This is low compared to the accuracy on the test set of 98.4%
+The model was able to correctly guess 6 of the 7 traffic signs, which gives an accuracy of 85.1%. This is low compared to the accuracy on the test set of 94.1%
 
 #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
@@ -310,10 +319,9 @@ The top five soft max probabilities for the web images along with the predicted 
  </figcaption>
 </figure>
 
-As we can observe from the visulazation, the model gave incorrect prediction on two out the seven images. Upon taking a closer look at the predictions, we can observe that 
-1. Model probably had problems in differentiating between "8" and "6" for the speed limit traffic sign but atleast it was able to detect it as a speed limit sign(~0.98 for top 2 classes).
-2. Model completely failed to detect the "Pedestrian crossing", instead detecting it as "right of the way at next intersection" with a probablity of ~0.98. This could be becuse both the signs are visually very similar and noise in the preprocessing and resizing stage could have contributed to incorrect prediction.
-3. Rest of the images have been correctly classified with high confidence apart from the "80km/hr" speed limit sign. Here again the model got confused between the "8" and "3".
+As we can observe from the visulazation, the model gave incorrect prediction on one out the seven images. Upon taking a closer look at the predictions, we can observe that 
+1. Model probably had problems in differentiating between "5" and "6" for the speed limit traffic sign but atleast it was able to detect it as a speed limit sign(~0.98 for top 2 classes).
+2. Rest of the images have been correctly classified with high confidence apart from the "30km/hr" speed limit sign. Here again the model got slightly confused between "8" and "3".
 
 
 
